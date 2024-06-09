@@ -7,15 +7,16 @@ import com.transactionHub.transactionProcessor.mapper.transaction.TransactionMap
 import com.transactionHub.transactionProcessor.modifier.AdjustOffsetModifier;
 import com.transactionHub.transactionProcessor.modifier.MetaUpserter;
 import com.transactionHub.transactionProcessor.modifier.Tagger;
-import com.transactionHub.transactionProcessor.validator.*;
+import com.transactionHub.transactionProcessor.validator.NetSumZeroValidator;
+import com.transactionHub.transactionProcessor.validator.OffsetSortedValidator;
+import com.transactionHub.transactionProcessor.validator.RuleViolateException;
+import com.transactionHub.transactionProcessor.validator.TransactionValidator;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiConsumer;
-import java.util.function.BiPredicate;
 import java.util.stream.Stream;
 
 public class ImportPipeline {
@@ -24,11 +25,11 @@ public class ImportPipeline {
     protected final TransactionMapper mapper;
     protected final Tagger tagger;
 
-    public ImportPipeline(Extractor extractor, TransactionMapper transactionMapper, Tagger tagger){
+    public ImportPipeline(Extractor extractor, TransactionMapper transactionMapper, Tagger tagger) {
         this.extractor = extractor;
         this.mapper = transactionMapper;
         this.tagger = tagger;
-    };
+    }
 
     public List<Transaction> importData(InputStream inputStream, String filename) throws RuleViolateException {
 
@@ -42,7 +43,6 @@ public class ImportPipeline {
                 .peek(tagger)
                 .peek(metaUpserter)
                 .toList();
-
         new AdjustOffsetModifier().accept(result);
 
         validateResult(result);
