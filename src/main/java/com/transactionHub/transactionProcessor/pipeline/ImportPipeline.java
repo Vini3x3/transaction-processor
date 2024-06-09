@@ -45,17 +45,20 @@ public class ImportPipeline {
 
         new AdjustOffsetModifier().accept(result);
 
-        result.stream().peek(new TransactionValidator());
-
-        validateRecords(result, new OffsetSortedValidator());
-        validateRecords(result, new NetSumZeroValidator());
+        validateResult(result);
 
         return result;
     }
 
-    public void validateRecords(List<Transaction> transactions, BiConsumer<Transaction, Transaction> predicate) {
+    protected void validateResult(List<Transaction> transactions) {
+        transactions.stream()
+                .peek(new TransactionValidator());
+
         Stream.iterate(0, n -> n + 1)
                 .limit(transactions.size() - 1)
-                .peek(i -> predicate.accept(transactions.get(i), transactions.get(i + 1)));
+                .peek(i -> new OffsetSortedValidator().accept(transactions.get(i), transactions.get(i + 1)))
+                .peek(i -> new NetSumZeroValidator().accept(transactions.get(i), transactions.get(i + 1)))
+        ;
     }
+
 }
