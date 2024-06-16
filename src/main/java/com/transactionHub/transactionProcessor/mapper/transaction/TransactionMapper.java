@@ -31,7 +31,7 @@ public class TransactionMapper implements Mapper<Transaction> {
         BigDecimal withdrawal = extractBigDecimal(entries.get(config.withdrawalHeader()));
         BigDecimal balance = extractBigDecimal(entries.get(config.balanceHeader()));
         int offset = (int)entries.get(TransactionMeta.IMPORT_LINE_NO);
-        return new Transaction(date, offset, config.account(), description, withdrawal, deposit, balance, false);
+        return new Transaction(date, offset, config.account(), description, withdrawal, deposit, balance);
     }
 
     protected Date extractDate(Object value) {
