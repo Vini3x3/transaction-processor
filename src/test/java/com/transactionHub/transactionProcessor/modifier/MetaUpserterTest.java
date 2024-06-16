@@ -20,7 +20,7 @@ public class MetaUpserterTest {
         var expectedMeta = Map.of(
                 TransactionMeta.IMPORT_FILENAME, "2024-03-BOC.csv",
                 TransactionMeta.IMPORT_TIMESTAMP, "2024-03-17T11:11:00.005",
-                TransactionMeta.ATTACHED_FILES, "SALARY-TAX-2023-2024.pdf"
+                TransactionMeta.REMARKS, "Pay Salary Tax"
         );
 
         var metaUpserter = new MetaUpserter(expectedMeta);
