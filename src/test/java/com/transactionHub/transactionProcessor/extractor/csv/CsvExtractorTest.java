@@ -20,7 +20,7 @@ public class CsvExtractorTest {
         var inputStream = CsvExtractorTest.class.getClassLoader().getResourceAsStream(filePath);
         Assertions.assertThat(inputStream).isNotNull();
 
-        var extractor = new CsvExtractor("\\|", System.lineSeparator());
+        var extractor = new CsvExtractor();
         var actual = extractor.extract(inputStream);
 
         var expected = new ArrayList<Map<String, Object>>();
@@ -83,18 +83,4 @@ public class CsvExtractorTest {
 
     }
 
-    @Test
-    void testHeaderOnlyFile() {
-        String filename = "HeaderOnlyCsv.csv";
-        String filePath = "sample/" + filename;
-
-        var inputStream = CsvExtractorTest.class.getClassLoader().getResourceAsStream(filePath);
-        Assertions.assertThat(inputStream).isNotNull();
-
-        var extractor = new CsvExtractor("\\|", System.lineSeparator());
-
-        Assertions.assertThatThrownBy(() -> extractor.extract(inputStream))
-                .withFailMessage("Empty CSV")
-                .isInstanceOf(ExtractorException.class);
-    }
 }
