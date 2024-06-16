@@ -27,12 +27,12 @@ public class TransactionValidatorTest {
 
     static Stream<Arguments> transactionList() {
         return Stream.of(
-                Arguments.of(new Transaction(null, 0, AccountEnum.FORMAL, "placeholder", BigDecimal.ONE, BigDecimal.ZERO, BigDecimal.ONE, false, null, null), true, "no date"),
-                Arguments.of(new Transaction(DateTime.now().toDate(), -2, AccountEnum.FORMAL, "placeholder", BigDecimal.ONE, BigDecimal.ZERO, BigDecimal.ONE,false, null, null), true, "negative offset"),
+                Arguments.of(new Transaction(null, 0, AccountEnum.BOC, "placeholder", BigDecimal.ONE, BigDecimal.ZERO, BigDecimal.ONE, false, null, null), true, "no date"),
+                Arguments.of(new Transaction(DateTime.now().toDate(), -2, AccountEnum.BOC, "placeholder", BigDecimal.ONE, BigDecimal.ZERO, BigDecimal.ONE,false, null, null), true, "negative offset"),
                 Arguments.of(new Transaction(DateTime.now().toDate(), 3, null, "placeholder", BigDecimal.ONE, BigDecimal.ZERO, BigDecimal.ONE, false, null, null), true, "no account"),
-                Arguments.of(new Transaction(DateTime.now().toDate(), 3, AccountEnum.FORMAL, "placeholder", BigDecimal.ONE, BigDecimal.ZERO, null, false, null, null), true, "no balance"),
-                Arguments.of(new Transaction(DateTime.now().toDate(), 3, AccountEnum.FORMAL, "placeholder", BigDecimal.ONE, BigDecimal.ONE, BigDecimal.ZERO, false, null, null), true, "deposit and withdraw together"),
-                Arguments.of(new Transaction(DateTime.now().toDate(), 3, AccountEnum.FORMAL, "placeholder", BigDecimal.ONE, BigDecimal.ZERO, BigDecimal.ONE, false, null, null), false, "valid")
+                Arguments.of(new Transaction(DateTime.now().toDate(), 3, AccountEnum.BOC, "placeholder", BigDecimal.ONE, BigDecimal.ZERO, null, false, null, null), true, "no balance"),
+                Arguments.of(new Transaction(DateTime.now().toDate(), 3, AccountEnum.BOC, "placeholder", BigDecimal.ONE, BigDecimal.ONE, BigDecimal.ZERO, false, null, null), true, "deposit and withdraw together"),
+                Arguments.of(new Transaction(DateTime.now().toDate(), 3, AccountEnum.BOC, "placeholder", BigDecimal.ONE, BigDecimal.ZERO, BigDecimal.ONE, false, null, null), false, "valid")
         );
     }
 }

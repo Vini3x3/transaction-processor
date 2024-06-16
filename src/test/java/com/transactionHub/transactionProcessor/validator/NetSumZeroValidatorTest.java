@@ -27,16 +27,16 @@ public class NetSumZeroValidatorTest {
     public static Stream<Arguments> transactionList() {
         return Stream.of(
                 Arguments.of(
-                        new Transaction(new DateTime(2024,1,15,0,0).toDate(), 0, AccountEnum.FORMAL, "", BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ONE, false),
-                        new Transaction(new DateTime(2024,1,15,0,0).toDate(), 0, AccountEnum.FORMAL, "", BigDecimal.ONE, BigDecimal.ZERO, BigDecimal.ONE, false),
+                        new Transaction(new DateTime(2024,1,15,0,0).toDate(), 0, AccountEnum.BOC, "", BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ONE, false),
+                        new Transaction(new DateTime(2024,1,15,0,0).toDate(), 0, AccountEnum.BOC, "", BigDecimal.ONE, BigDecimal.ZERO, BigDecimal.ONE, false),
                         true, "Net Change not zero"),
                 Arguments.of(
-                        new Transaction(new DateTime(2024,1,15,0,0).toDate(), 0, AccountEnum.FORMAL, "", BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ONE, false),
-                        new Transaction(new DateTime(2024,1,15,0,0).toDate(), 1, AccountEnum.FORMAL, "", BigDecimal.ZERO, BigDecimal.ONE, BigDecimal.TWO, false),
+                        new Transaction(new DateTime(2024,1,15,0,0).toDate(), 0, AccountEnum.BOC, "", BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ONE, false),
+                        new Transaction(new DateTime(2024,1,15,0,0).toDate(), 1, AccountEnum.BOC, "", BigDecimal.ZERO, BigDecimal.ONE, BigDecimal.TWO, false),
                         false, "Deposit Success"),
                 Arguments.of(
-                        new Transaction(new DateTime(2024,1,15,0,0).toDate(), 0, AccountEnum.FORMAL, "", BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ONE, false),
-                        new Transaction(new DateTime(2024,1,15,0,0).toDate(), 1, AccountEnum.FORMAL, "", BigDecimal.ONE, BigDecimal.ZERO, BigDecimal.ZERO, false),
+                        new Transaction(new DateTime(2024,1,15,0,0).toDate(), 0, AccountEnum.BOC, "", BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ONE, false),
+                        new Transaction(new DateTime(2024,1,15,0,0).toDate(), 1, AccountEnum.BOC, "", BigDecimal.ONE, BigDecimal.ZERO, BigDecimal.ZERO, false),
                         false, "Withdrawal Success")
         );
     }

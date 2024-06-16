@@ -10,7 +10,7 @@ class TransactionMapperConfigTest {
     @Test
     void testInvalidConfig() {
 
-        Assertions.assertThatThrownBy(() -> new TransactionMapperConfig(null, "Desc", "Withdrawal", "Deposit", "Balance", AccountEnum.FORMAL, "yyyy/MM/dd"))
+        Assertions.assertThatThrownBy(() -> new TransactionMapperConfig(null, "Desc", "Withdrawal", "Deposit", "Balance", AccountEnum.BOC, "yyyy/MM/dd"))
                 .isInstanceOf(InvalidConfigException.class)
                 .hasMessageContaining("Blank or null field");
     }

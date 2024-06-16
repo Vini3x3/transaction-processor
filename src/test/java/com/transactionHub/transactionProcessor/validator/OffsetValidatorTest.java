@@ -27,20 +27,20 @@ public class OffsetValidatorTest {
     public static Stream<Arguments> transactionList() {
         return Stream.of(
                 Arguments.of(
-                        new Transaction(new DateTime(2024,1,15,0,0).toDate(), 0, AccountEnum.FORMAL, "", BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, false),
-                        new Transaction(new DateTime(2024,1,15,0,0).toDate(), 0, AccountEnum.FORMAL, "", BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, false),
+                        new Transaction(new DateTime(2024,1,15,0,0).toDate(), 0, AccountEnum.BOC, "", BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, false),
+                        new Transaction(new DateTime(2024,1,15,0,0).toDate(), 0, AccountEnum.BOC, "", BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, false),
                         true, "same date invalid offset"),
                 Arguments.of(
-                        new Transaction(new DateTime(2024,1,15,0,0).toDate(), 0, AccountEnum.FORMAL, "", BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, false),
-                        new Transaction(new DateTime(2024,1,17,0,0).toDate(), 1, AccountEnum.FORMAL, "", BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, false),
+                        new Transaction(new DateTime(2024,1,15,0,0).toDate(), 0, AccountEnum.BOC, "", BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, false),
+                        new Transaction(new DateTime(2024,1,17,0,0).toDate(), 1, AccountEnum.BOC, "", BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, false),
                         true, "different date increasing offset"),
                 Arguments.of(
-                        new Transaction(new DateTime(2024,1,15,0,0).toDate(), 0, AccountEnum.FORMAL, "", BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, false),
-                        new Transaction(new DateTime(2024,1,15,0,0).toDate(), 1, AccountEnum.FORMAL, "", BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, false),
+                        new Transaction(new DateTime(2024,1,15,0,0).toDate(), 0, AccountEnum.BOC, "", BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, false),
+                        new Transaction(new DateTime(2024,1,15,0,0).toDate(), 1, AccountEnum.BOC, "", BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, false),
                         false, "same date increasing offset"),
                 Arguments.of(
-                        new Transaction(new DateTime(2024,1,15,0,0).toDate(), 0, AccountEnum.FORMAL, "", BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, false),
-                        new Transaction(new DateTime(2024,1,17,0,0).toDate(), 0, AccountEnum.FORMAL, "", BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, false),
+                        new Transaction(new DateTime(2024,1,15,0,0).toDate(), 0, AccountEnum.BOC, "", BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, false),
+                        new Transaction(new DateTime(2024,1,17,0,0).toDate(), 0, AccountEnum.BOC, "", BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, false),
                         false, "different reset offset")
         );
     }
