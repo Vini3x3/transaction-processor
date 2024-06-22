@@ -1,5 +1,6 @@
 package com.transactionHub.transactionProcessor.mapper.transaction;
 
+import com.transactionHub.transactionCoreLibrary.constant.AccountEnum;
 import com.transactionHub.transactionCoreLibrary.constant.TransactionMeta;
 import com.transactionHub.transactionCoreLibrary.domain.Transaction;
 import com.transactionHub.transactionProcessor.mapper.Mapper;
@@ -17,21 +18,39 @@ import java.util.Set;
 
 public class TransactionMapper implements Mapper<Transaction> {
 
-    protected final TransactionMapperConfig config;
+    private final String dateHeader;
+    private final String descriptionHeader;
+    private final String withdrawalHeader;
+    private final String depositHeader;
+    private final String balanceHeader;
+    private final AccountEnum account;
+    private final String datePattern;
 
-    public TransactionMapper(TransactionMapperConfig config) {
-        this.config = config;
+    public TransactionMapper(String dateHeader,
+                             String descriptionHeader,
+                             String withdrawalHeader,
+                             String depositHeader,
+                             String balanceHeader,
+                             AccountEnum account,
+                             String datePattern) {
+        this.dateHeader = dateHeader;
+        this.descriptionHeader = descriptionHeader;
+        this.withdrawalHeader = withdrawalHeader;
+        this.depositHeader = depositHeader;
+        this.balanceHeader = balanceHeader;
+        this.account = account;
+        this.datePattern = datePattern;
     }
 
     @Override
     public Transaction map(Map<String, Object> entries) {
-        Date date = extractDate(entries.get(config.dateHeader()));
-        String description = (String) entries.get(config.descriptionHeader());
-        BigDecimal deposit = extractBigDecimal(entries.get(config.depositHeader()));
-        BigDecimal withdrawal = extractBigDecimal(entries.get(config.withdrawalHeader()));
-        BigDecimal balance = extractBigDecimal(entries.get(config.balanceHeader()));
+        Date date = extractDate(entries.get(this.dateHeader));
+        String description = (String) entries.get(this.descriptionHeader);
+        BigDecimal deposit = extractBigDecimal(entries.get(this.depositHeader));
+        BigDecimal withdrawal = extractBigDecimal(entries.get(this.withdrawalHeader));
+        BigDecimal balance = extractBigDecimal(entries.get(this.balanceHeader));
         int offset = (int)entries.get(TransactionMeta.IMPORT_LINE_NO);
-        return new Transaction(date, offset, config.account(), description, withdrawal, deposit, balance);
+        return new Transaction(date, offset, this.account, description, withdrawal, deposit, balance);
     }
 
     protected Date extractDate(Object value) {
@@ -39,7 +58,7 @@ public class TransactionMapper implements Mapper<Transaction> {
             return date;
         }
         String strValue = (String) value;
-        DateTimeFormatter dtf = DateTimeFormat.forPattern(config.datePattern());
+        DateTimeFormatter dtf = DateTimeFormat.forPattern(this.datePattern);
         return dtf.parseDateTime(strValue).toDate();
     }
 

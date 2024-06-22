@@ -14,18 +14,13 @@ class TransactionMapperTest {
 
     @Test
     void testMapping() {
-        var config = new TransactionMapperConfig(
-                "Date",
+        TransactionMapper mapper = new TransactionMapper("Date",
                 "Transaction Details",
                 "Withdrawal",
                 "Deposit",
                 "Balance in Original Currency",
                 AccountEnum.BOC,
-                "yyyy/MM/dd"
-        );
-
-
-        TransactionMapper mapper = new TransactionMapper(config);
+                "yyyy/MM/dd");
 
         var entry = new HashMap<String, Object>(Map.of(
                 "Date", "2024/02/25",
