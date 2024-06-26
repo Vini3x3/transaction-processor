@@ -6,7 +6,5 @@ import java.util.Map;
 
 public interface Extractor {
     List<Map<String, Object>> extract(InputStream inputStream);
-
-    String FILENAME = "filename";
 }
 

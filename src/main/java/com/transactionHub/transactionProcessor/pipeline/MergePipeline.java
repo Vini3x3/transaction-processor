@@ -1,5 +1,6 @@
 package com.transactionHub.transactionProcessor.pipeline;
 
+import com.transactionHub.transactionCoreLibrary.constant.TagConstant;
 import com.transactionHub.transactionCoreLibrary.constant.TagType;
 import com.transactionHub.transactionCoreLibrary.domain.Transaction;
 import com.transactionHub.transactionProcessor.validator.RuleViolateException;
@@ -12,7 +13,7 @@ import java.util.stream.Collectors;
 
 public class MergePipeline {
 
-    protected static final String VIRTUAL_TAG = TagType.SYS + ":" + TagType.VIRTUAL;
+    protected static final String VIRTUAL_TAG = TagConstant.SYS + ":" + TagConstant.VIRTUAL;
 
     // Assume the importTransactions and virtualTransactions are in order
     // only tags and meta are merged.
