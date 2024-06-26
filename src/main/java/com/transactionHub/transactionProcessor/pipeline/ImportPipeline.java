@@ -6,6 +6,7 @@ import com.transactionHub.transactionProcessor.extractor.Extractor;
 import com.transactionHub.transactionProcessor.mapper.transaction.TransactionMapper;
 import com.transactionHub.transactionProcessor.modifier.AdjustOffsetModifier;
 import com.transactionHub.transactionProcessor.modifier.MetaUpserter;
+import com.transactionHub.transactionProcessor.modifier.SystemTagger;
 import com.transactionHub.transactionProcessor.modifier.Tagger;
 import com.transactionHub.transactionProcessor.validator.NetSumZeroValidator;
 import com.transactionHub.transactionProcessor.validator.OffsetSortedValidator;
@@ -24,11 +25,13 @@ public class ImportPipeline {
     protected final Extractor extractor;
     protected final TransactionMapper mapper;
     protected final Tagger tagger;
+    protected final SystemTagger systemTagger;
 
-    public ImportPipeline(Extractor extractor, TransactionMapper transactionMapper, Tagger tagger) {
+    public ImportPipeline(Extractor extractor, TransactionMapper transactionMapper, Tagger tagger, SystemTagger systemTagger) {
         this.extractor = extractor;
         this.mapper = transactionMapper;
         this.tagger = tagger;
+        this.systemTagger = systemTagger;
     }
 
     public List<Transaction> importData(InputStream inputStream, String filename) throws RuleViolateException {
@@ -41,6 +44,7 @@ public class ImportPipeline {
         var result = extractor.extract(inputStream).stream()
                 .map(mapper::map)
                 .peek(tagger)
+                .peek(systemTagger)
                 .peek(metaUpserter)
                 .toList();
         new AdjustOffsetModifier().accept(result);

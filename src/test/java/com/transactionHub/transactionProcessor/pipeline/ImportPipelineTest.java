@@ -1,12 +1,14 @@
 package com.transactionHub.transactionProcessor.pipeline;
 
 import com.transactionHub.transactionCoreLibrary.constant.AccountEnum;
+import com.transactionHub.transactionCoreLibrary.constant.TagType;
 import com.transactionHub.transactionCoreLibrary.constant.TransactionMeta;
 import com.transactionHub.transactionCoreLibrary.domain.Transaction;
 import com.transactionHub.transactionProcessor.extractor.Extractor;
 import com.transactionHub.transactionProcessor.extractor.csv.CsvExtractor;
 import com.transactionHub.transactionProcessor.extractor.excel.ExcelExtractor;
 import com.transactionHub.transactionProcessor.mapper.transaction.TransactionMapper;
+import com.transactionHub.transactionProcessor.modifier.SystemTagger;
 import com.transactionHub.transactionProcessor.modifier.Tagger;
 import org.assertj.core.api.Assertions;
 import org.joda.time.DateTime;
@@ -56,24 +58,22 @@ class ImportPipelineTest {
                 "yyyy/MM/dd");
 
         var tagger = new Tagger(Map.of(
-                "THE HONGKONG ELECTRIC CO LTD", Set.of(
-                        "SCHEDULE",
-                        "SCHEDULE-1"
-                ),
-                "CHINA MOBILE HONG KONG COMPANY LIMITED", Set.of(
-                        "SCHEDULE",
-                        "SCHEDULE-1"
-                ),
-                "CUMBERLAND PRESBYTERIAN CHURCH H K P", Set.of(
-                        "SCHEDULE",
-                        "SCHEDULE-2"
-                ),
                 "MR CHU CHI HANG", Set.of(
                         "INTERNAL"
                 )
         ));
 
-        var importPipeline = new ImportPipeline(extractor, mapper, tagger);
+        var systemTagger = new SystemTagger(Map.of(
+                TagType.SCHEDULE, Map.of(
+                        "SCHEDULE-1", Set.of(
+                                "THE HONGKONG ELECTRIC CO LTD",
+                                "CHINA MOBILE HONG KONG COMPANY LIMITED",
+                                "CUMBERLAND PRESBYTERIAN CHURCH H K P"
+                        )
+                )
+        ));
+
+        var importPipeline = new ImportPipeline(extractor, mapper, tagger, systemTagger);
 
         var transactions = importPipeline.importData(inputStream, filename);
 
@@ -111,7 +111,7 @@ class ImportPipelineTest {
         Assertions.assertThat(transaction2.getDeposit()).isEqualTo(new BigDecimal("0.00"));
         Assertions.assertThat(transaction2.getWithdrawal()).isEqualTo(new BigDecimal("279.00"));
         Assertions.assertThat(transaction2.getBalance()).isEqualTo(new BigDecimal("3480.34"));
-        Assertions.assertThat(transaction2.getTags()).containsExactly("SCHEDULE", "SCHEDULE-1");
+        Assertions.assertThat(transaction2.getTags()).containsExactly("SYS:SCHEDULE:SCHEDULE-1");
         Assertions.assertThat(transaction2.getMeta()).containsEntry(TransactionMeta.IMPORT_FILENAME, filename);
         Assertions.assertThat(transaction2.getMeta()).containsKey(TransactionMeta.IMPORT_TIMESTAMP);
         Assertions.assertThat(transaction2.getMeta().get(TransactionMeta.IMPORT_TIMESTAMP)).contains(importDateString);
