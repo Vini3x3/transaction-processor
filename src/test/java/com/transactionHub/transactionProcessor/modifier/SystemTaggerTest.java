@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Map;
 import java.util.Set;
 
-public class RuleBasedTaggerTest {
+public class SystemTaggerTest {
 
     @Test
     void testTagging() {
@@ -25,7 +25,7 @@ public class RuleBasedTaggerTest {
                 )
         );
 
-        var tagger = new RuleBasedTagger(config);
+        var tagger = new SystemTagger(config);
 
         Assertions.assertThatNoException().isThrownBy(() -> tagger.accept(transaction));
 

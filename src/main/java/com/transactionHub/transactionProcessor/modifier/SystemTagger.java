@@ -1,19 +1,17 @@
 package com.transactionHub.transactionProcessor.modifier;
 
 import com.transactionHub.transactionCoreLibrary.constant.TagConstant;
-import com.transactionHub.transactionCoreLibrary.constant.TagType;
 import com.transactionHub.transactionCoreLibrary.domain.Transaction;
-import com.transactionHub.transactionCoreLibrary.util.TagBuilder;
 
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
-public class RuleBasedTagger implements Consumer<Transaction> {
+public class SystemTagger implements Consumer<Transaction> {
     private final Map<String, Map<String, Set<String>>> rules;
 
-    public RuleBasedTagger(Map<String, Map<String, Set<String>>> rules) {
+    public SystemTagger(Map<String, Map<String, Set<String>>> rules) {
         this.rules = rules;
     }
 
