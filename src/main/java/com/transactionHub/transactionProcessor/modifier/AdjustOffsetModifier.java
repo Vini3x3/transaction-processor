@@ -16,7 +16,7 @@ public class AdjustOffsetModifier implements Consumer<List<Transaction>> {
 
         // init first transaction
         int currentOffset = transactions.getFirst().getOffset();
-        DateTime currentDate = transactions.getFirst().getDate();
+        var currentDate = transactions.getFirst().getDate();
 
         // assume offset is strictly increasing by 1
         for (var transaction: transactions.subList(1, transactions.size())) {
