@@ -1,6 +1,7 @@
 package com.transactionHub.transactionProcessor.modifier;
 
 import com.transactionHub.transactionCoreLibrary.domain.Transaction;
+import org.joda.time.DateTime;
 
 import java.util.Date;
 import java.util.List;
@@ -15,7 +16,7 @@ public class AdjustOffsetModifier implements Consumer<List<Transaction>> {
 
         // init first transaction
         int currentOffset = transactions.getFirst().getOffset();
-        Date currentDate = transactions.getFirst().getDate();
+        DateTime currentDate = transactions.getFirst().getDate();
 
         // assume offset is strictly increasing by 1
         for (var transaction: transactions.subList(1, transactions.size())) {

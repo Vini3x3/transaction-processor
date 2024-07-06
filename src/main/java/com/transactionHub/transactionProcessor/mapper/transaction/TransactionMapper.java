@@ -5,6 +5,8 @@ import com.transactionHub.transactionCoreLibrary.constant.TransactionMeta;
 import com.transactionHub.transactionCoreLibrary.domain.Transaction;
 import com.transactionHub.transactionProcessor.mapper.Mapper;
 import com.transactionHub.transactionProcessor.mapper.MapperException;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -14,7 +16,6 @@ import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.Map;
-import java.util.Set;
 
 public class TransactionMapper implements Mapper<Transaction> {
 
@@ -44,7 +45,7 @@ public class TransactionMapper implements Mapper<Transaction> {
 
     @Override
     public Transaction map(Map<String, Object> entries) {
-        Date date = extractDate(entries.get(this.dateHeader));
+        DateTime date = extractDate(entries.get(this.dateHeader));
         String description = (String) entries.get(this.descriptionHeader);
         BigDecimal deposit = extractBigDecimal(entries.get(this.depositHeader));
         BigDecimal withdrawal = extractBigDecimal(entries.get(this.withdrawalHeader));
@@ -53,13 +54,14 @@ public class TransactionMapper implements Mapper<Transaction> {
         return new Transaction(date, offset, this.account, description, withdrawal, deposit, balance);
     }
 
-    protected Date extractDate(Object value) {
+    protected DateTime extractDate(Object value) {
         if (value instanceof Date date) {
-            return date;
+            var tmp = new DateTime(date.getTime()).withTimeAtStartOfDay();
+            return new DateTime(tmp.getYear(), tmp.getMonthOfYear(), tmp.getDayOfMonth(), 0, 0, DateTimeZone.UTC);
         }
         String strValue = (String) value;
-        DateTimeFormatter dtf = DateTimeFormat.forPattern(this.datePattern);
-        return dtf.parseDateTime(strValue).toDate();
+        DateTimeFormatter dtf = DateTimeFormat.forPattern(this.datePattern).withZoneUTC();
+        return dtf.parseDateTime(strValue);
     }
 
     protected BigDecimal extractBigDecimal(Object value) {

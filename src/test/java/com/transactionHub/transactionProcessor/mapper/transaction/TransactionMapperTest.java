@@ -4,6 +4,7 @@ import com.transactionHub.transactionCoreLibrary.constant.AccountEnum;
 import com.transactionHub.transactionCoreLibrary.constant.TransactionMeta;
 import org.assertj.core.api.Assertions;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -14,7 +15,8 @@ class TransactionMapperTest {
 
     @Test
     void testMapping() {
-        TransactionMapper mapper = new TransactionMapper("Date",
+        TransactionMapper mapper = new TransactionMapper(
+                "Date",
                 "Transaction Details",
                 "Withdrawal",
                 "Deposit",
@@ -32,7 +34,7 @@ class TransactionMapperTest {
         ));
 
         var transaction = mapper.map(entry);
-        Assertions.assertThat(transaction.getDate()).isEqualTo(new DateTime(2024, 2, 25, 0, 0).toDate());
+        Assertions.assertThat(transaction.getDate()).isEqualTo(new DateTime(2024, 2, 25, 0, 0, DateTimeZone.UTC));
         Assertions.assertThat(transaction.getDescription()).isEqualTo("Transfer FPS CHINA MOBILE HONG KONG COMPANY LIMITED 12240225F410234225");
         Assertions.assertThat(transaction.getDeposit()).isEqualTo(new BigDecimal("0.00"));
         Assertions.assertThat(transaction.getWithdrawal()).isEqualTo(new BigDecimal("88.00"));
