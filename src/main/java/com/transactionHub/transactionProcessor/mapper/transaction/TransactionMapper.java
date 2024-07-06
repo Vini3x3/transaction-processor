@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
+import java.time.Instant;
 import java.util.Date;
 import java.util.Map;
 
@@ -45,23 +46,24 @@ public class TransactionMapper implements Mapper<Transaction> {
 
     @Override
     public Transaction map(Map<String, Object> entries) {
-        DateTime date = extractDate(entries.get(this.dateHeader));
+        Instant date = extractDate(entries.get(this.dateHeader));
         String description = (String) entries.get(this.descriptionHeader);
         BigDecimal deposit = extractBigDecimal(entries.get(this.depositHeader));
         BigDecimal withdrawal = extractBigDecimal(entries.get(this.withdrawalHeader));
         BigDecimal balance = extractBigDecimal(entries.get(this.balanceHeader));
-        int offset = (int)entries.get(TransactionMeta.IMPORT_LINE_NO);
+        int offset = (int) entries.get(TransactionMeta.IMPORT_LINE_NO);
         return new Transaction(date, offset, this.account, description, withdrawal, deposit, balance);
     }
 
-    protected DateTime extractDate(Object value) {
+    protected Instant extractDate(Object value) {
         if (value instanceof Date date) {
             var tmp = new DateTime(date.getTime()).withTimeAtStartOfDay();
-            return new DateTime(tmp.getYear(), tmp.getMonthOfYear(), tmp.getDayOfMonth(), 0, 0, DateTimeZone.UTC);
+            var tmp2 = new DateTime(tmp.getYear(), tmp.getMonthOfYear(), tmp.getDayOfMonth(), 0, 0, DateTimeZone.UTC);
+            return Instant.ofEpochMilli(tmp2.getMillis());
         }
         String strValue = (String) value;
         DateTimeFormatter dtf = DateTimeFormat.forPattern(this.datePattern).withZoneUTC();
-        return dtf.parseDateTime(strValue);
+        return Instant.ofEpochMilli(dtf.parseDateTime(strValue).getMillis());
     }
 
     protected BigDecimal extractBigDecimal(Object value) {

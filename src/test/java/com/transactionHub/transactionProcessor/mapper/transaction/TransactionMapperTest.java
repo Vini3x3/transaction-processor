@@ -2,6 +2,7 @@ package com.transactionHub.transactionProcessor.mapper.transaction;
 
 import com.transactionHub.transactionCoreLibrary.constant.AccountEnum;
 import com.transactionHub.transactionCoreLibrary.constant.TransactionMeta;
+import com.transactionHub.transactionProcessor.TestUtil;
 import org.assertj.core.api.Assertions;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -34,7 +35,7 @@ class TransactionMapperTest {
         ));
 
         var transaction = mapper.map(entry);
-        Assertions.assertThat(transaction.getDate()).isEqualTo(new DateTime(2024, 2, 25, 0, 0, DateTimeZone.UTC));
+        Assertions.assertThat(transaction.getDate()).isEqualTo(TestUtil.convertToInstant(new DateTime(2024, 2, 25, 0, 0, DateTimeZone.UTC)));
         Assertions.assertThat(transaction.getDescription()).isEqualTo("Transfer FPS CHINA MOBILE HONG KONG COMPANY LIMITED 12240225F410234225");
         Assertions.assertThat(transaction.getDeposit()).isEqualTo(new BigDecimal("0.00"));
         Assertions.assertThat(transaction.getWithdrawal()).isEqualTo(new BigDecimal("88.00"));

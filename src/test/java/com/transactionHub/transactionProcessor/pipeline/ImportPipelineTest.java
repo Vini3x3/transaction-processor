@@ -22,6 +22,8 @@ import java.math.BigDecimal;
 import java.util.Map;
 import java.util.Set;
 
+import static com.transactionHub.transactionProcessor.TestUtil.convertToInstant;
+
 class ImportPipelineTest {
 
     @Test
@@ -83,7 +85,7 @@ class ImportPipelineTest {
         Assertions.assertThat(transactions).hasSize(6);
 
         Transaction transaction0 = transactions.get(0);
-        Assertions.assertThat(transaction0.getDate()).isEqualTo(new DateTime(2023, 11, 30, 0, 0, 0, DateTimeZone.UTC));
+        Assertions.assertThat(transaction0.getDate()).isEqualTo(convertToInstant(new DateTime(2023, 11, 30, 0, 0, 0, DateTimeZone.UTC)));
         Assertions.assertThat(transaction0.getOffset()).isEqualTo(0);
         Assertions.assertThat(transaction0.getDescription()).isEqualTo("Balance Brought Forward");
         Assertions.assertThat(transaction0.getDeposit()).isEqualTo(new BigDecimal("0.00"));
@@ -94,7 +96,7 @@ class ImportPipelineTest {
         Assertions.assertThat(transaction0.getMeta().get(TransactionMeta.IMPORT_TIMESTAMP)).contains(importDateString);
 
         Transaction transaction1 = transactions.get(1);
-        Assertions.assertThat(transaction1.getDate()).isEqualTo(new DateTime(2023, 12, 25, 0, 0, 0, DateTimeZone.UTC));
+        Assertions.assertThat(transaction1.getDate()).isEqualTo(convertToInstant(new DateTime(2023, 12, 25, 0, 0, 0, DateTimeZone.UTC)));
         Assertions.assertThat(transaction1.getOffset()).isEqualTo(0);
         Assertions.assertThat(transaction1.getDescription()).isEqualTo("Transfer FPS/MR CHU CHI HANG/FRN20231225PAYC0101405310021");
         Assertions.assertThat(transaction1.getDeposit()).isEqualTo(new BigDecimal("3575.34"));
@@ -105,8 +107,7 @@ class ImportPipelineTest {
         Assertions.assertThat(transaction1.getMeta().get(TransactionMeta.IMPORT_TIMESTAMP)).contains(importDateString);
 
         Transaction transaction2 = transactions.get(2);
-        Assertions.assertThat(transaction2.getDate()).isEqualTo(new DateTime(2023, 12, 25, 0, 0, 0, DateTimeZone.UTC)
-                .withZone(DateTimeZone.UTC));
+        Assertions.assertThat(transaction2.getDate()).isEqualTo(convertToInstant(new DateTime(2023, 12, 25, 0, 0, 0, DateTimeZone.UTC)));
         Assertions.assertThat(transaction2.getOffset()).isEqualTo(1);
         Assertions.assertThat(transaction2.getDescription()).isEqualTo("Transfer FPS/THE HONGKONG ELECTRIC CO LTD/12231225F386428088");
         Assertions.assertThat(transaction2.getDeposit()).isEqualTo(new BigDecimal("0.00"));
