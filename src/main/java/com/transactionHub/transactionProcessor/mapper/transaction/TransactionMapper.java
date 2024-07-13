@@ -60,8 +60,8 @@ public class TransactionMapper implements Mapper<Transaction> {
             withdrawal = extractBigDecimal(entries.get(this.withdrawalHeader));
         } else {
             BigDecimal delta = extractBigDecimal(entries.get(this.deltaHeader));
-            deposit = delta.compareTo(BigDecimal.ZERO) > 0 ? delta.abs() : BigDecimal.ZERO.setScale(2, RoundingMode.DOWN);
-            withdrawal = delta.compareTo(BigDecimal.ZERO) < 0 ? delta.abs() : BigDecimal.ZERO.setScale(2, RoundingMode.DOWN);
+            deposit = delta.compareTo(BigDecimal.ZERO) > 0 ? delta.abs() : BigDecimal.ZERO.setScale(2, RoundingMode.HALF_EVEN);
+            withdrawal = delta.compareTo(BigDecimal.ZERO) < 0 ? delta.abs() : BigDecimal.ZERO.setScale(2, RoundingMode.HALF_EVEN);
         }
 
         BigDecimal balance = extractBigDecimal(entries.get(this.balanceHeader));
@@ -83,16 +83,16 @@ public class TransactionMapper implements Mapper<Transaction> {
     protected BigDecimal extractBigDecimal(Object value) {
 
         if (value == null) {
-            return BigDecimal.ZERO.setScale(2);
+            return BigDecimal.ZERO.setScale(2, RoundingMode.HALF_EVEN);
         }
 
         if (value instanceof BigDecimal bigDecimal) {
-            return bigDecimal.setScale(2);
+            return bigDecimal.setScale(2, RoundingMode.HALF_EVEN);
         }
 
         String strValue = (String) value;
         if (strValue.isBlank()) {
-            return BigDecimal.ZERO.setScale(2);
+            return BigDecimal.ZERO.setScale(2, RoundingMode.HALF_EVEN);
         }
 
         DecimalFormatSymbols symbols = new DecimalFormatSymbols();
