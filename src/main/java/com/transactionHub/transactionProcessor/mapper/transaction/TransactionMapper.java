@@ -11,6 +11,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
@@ -24,6 +25,7 @@ public class TransactionMapper implements Mapper<Transaction> {
     private final String descriptionHeader;
     private final String withdrawalHeader;
     private final String depositHeader;
+    private final String deltaHeader;
     private final String balanceHeader;
     private final AccountEnum account;
     private final String datePattern;
@@ -32,6 +34,7 @@ public class TransactionMapper implements Mapper<Transaction> {
                              String descriptionHeader,
                              String withdrawalHeader,
                              String depositHeader,
+                             String deltaHeader,
                              String balanceHeader,
                              AccountEnum account,
                              String datePattern) {
@@ -40,6 +43,7 @@ public class TransactionMapper implements Mapper<Transaction> {
         this.withdrawalHeader = withdrawalHeader;
         this.depositHeader = depositHeader;
         this.balanceHeader = balanceHeader;
+        this.deltaHeader = deltaHeader;
         this.account = account;
         this.datePattern = datePattern;
     }
@@ -48,8 +52,18 @@ public class TransactionMapper implements Mapper<Transaction> {
     public Transaction map(Map<String, Object> entries) {
         Instant date = extractDate(entries.get(this.dateHeader));
         String description = (String) entries.get(this.descriptionHeader);
-        BigDecimal deposit = extractBigDecimal(entries.get(this.depositHeader));
-        BigDecimal withdrawal = extractBigDecimal(entries.get(this.withdrawalHeader));
+
+        BigDecimal deposit, withdrawal;
+
+        if (entries.containsKey(this.depositHeader) && entries.containsKey(this.withdrawalHeader)) {
+            deposit = extractBigDecimal(entries.get(this.depositHeader));
+            withdrawal = extractBigDecimal(entries.get(this.withdrawalHeader));
+        } else {
+            BigDecimal delta = extractBigDecimal(entries.get(this.deltaHeader));
+            deposit = delta.compareTo(BigDecimal.ZERO) > 0 ? delta.abs() : BigDecimal.ZERO.setScale(2, RoundingMode.DOWN);
+            withdrawal = delta.compareTo(BigDecimal.ZERO) < 0 ? delta.abs() : BigDecimal.ZERO.setScale(2, RoundingMode.DOWN);
+        }
+
         BigDecimal balance = extractBigDecimal(entries.get(this.balanceHeader));
         int offset = (int) entries.get(TransactionMeta.IMPORT_LINE_NO);
         return new Transaction(date, offset, this.account, description, withdrawal, deposit, balance);
