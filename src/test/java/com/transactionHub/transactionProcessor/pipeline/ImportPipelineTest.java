@@ -55,6 +55,7 @@ class ImportPipelineTest {
                 "Transaction Details",
                 "Withdrawal",
                 "Deposit",
+                "",
                 "Balance in Original Currency",
                 AccountEnum.BOC,
                 "yyyy/MM/dd");
