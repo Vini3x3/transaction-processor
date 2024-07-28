@@ -1,9 +1,6 @@
 package com.transactionHub.transactionProcessor.extractor.csv;
 
-import com.opencsv.CSVParser;
-import com.opencsv.CSVParserBuilder;
-import com.opencsv.CSVReader;
-import com.opencsv.CSVReaderBuilder;
+import com.opencsv.*;
 import com.opencsv.exceptions.CsvValidationException;
 import com.transactionHub.transactionCoreLibrary.constant.TransactionMeta;
 import com.transactionHub.transactionProcessor.extractor.Extractor;
@@ -16,7 +13,7 @@ import java.util.*;
 
 public class CsvExtractor implements Extractor {
 
-    private final CSVParser csvParser;
+    private final AbstractCSVParser csvParser;
 
     public CsvExtractor() {
         this(null);
@@ -67,7 +64,7 @@ public class CsvExtractor implements Extractor {
     private Map<String, Object> convertToMap(List<String> headers, List<String> items) {
         Map<String, Object> result = new HashMap<>();
         for (int i = 0; i < headers.size(); i++) {
-            result.put(headers.get(i), items.get(i));
+            result.put(headers.get(i), items.get(i).replaceAll("^\"|\"$", ""));
         }
         return result;
     }

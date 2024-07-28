@@ -74,4 +74,41 @@ public class CsvExtractorTest {
 
     }
 
+    @Test
+    void testExtract_Default() {
+
+        String filename = "2023-07-hsbc-saving.csv";
+        String filePath = "sample/" + filename;
+        var inputStream = CsvExtractorTest.class.getClassLoader().getResourceAsStream(filePath);
+        Assertions.assertThat(inputStream).isNotNull();
+
+        var extractor = new CsvExtractor();
+        var actual = extractor.extract(inputStream);
+
+        var expected = new ArrayList<Map<String, Object>>();
+
+        Map<String, Object> line0 = new HashMap<>();
+        line0.put("Date", "25/07/2023");
+        line0.put("Description", "CHAN TAI MAN             N23828924859(25JUL23)");
+        line0.put("Billing amount", "8,000.00");
+        line0.put("Billing currency", "HKD");
+        line0.put("Balance", "108,000.00");
+        line0.put("Balance currency", "HKD");
+        line0.put(TransactionMeta.IMPORT_LINE_NO, 0);
+        expected.add(line0);
+
+        Map<String, Object> line1 = new HashMap<>();
+        line1.put("Date", "28/07/2023");
+        line1.put("Description", "CREDIT INTEREST");
+        line1.put("Billing amount", "64.80");
+        line1.put("Billing currency", "HKD");
+        line1.put("Balance", "108,064.80");
+        line1.put("Balance currency", "HKD");
+        line1.put(TransactionMeta.IMPORT_LINE_NO, 1);
+        expected.add(line1);
+
+        ExtractorTestUtil.assertTableContent(expected, actual);
+
+    }
+
 }
