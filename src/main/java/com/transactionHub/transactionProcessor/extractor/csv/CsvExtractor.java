@@ -1,8 +1,6 @@
 package com.transactionHub.transactionProcessor.extractor.csv;
 
-import com.opencsv.CSVParserBuilder;
-import com.opencsv.CSVReader;
-import com.opencsv.CSVReaderBuilder;
+import com.opencsv.*;
 import com.opencsv.exceptions.CsvValidationException;
 import com.transactionHub.transactionCoreLibrary.constant.TransactionMeta;
 import com.transactionHub.transactionProcessor.extractor.Extractor;
@@ -15,23 +13,24 @@ import java.util.*;
 
 public class CsvExtractor implements Extractor {
 
-    private final char separator;
+    private final AbstractCSVParser csvParser;
 
     public CsvExtractor() {
-        this('|');
+        this(null);
     }
 
-    public CsvExtractor(char separator) {
-        this.separator = separator;
+    public CsvExtractor(Character separator) {
+        var builder = new CSVParserBuilder();
+        if (separator != null) {
+            builder.withSeparator(separator);
+        }
+        csvParser = builder.build();
     }
 
     @Override
     public List<Map<String, Object>> extract(InputStream inputStream) {
-
         CSVReader reader = new CSVReaderBuilder(new InputStreamReader(inputStream))
-                .withCSVParser(new CSVParserBuilder()
-                        .withSeparator(separator)
-                        .build())
+                .withCSVParser(this.csvParser)
                 .build();
 
         List<String> headers = new ArrayList<>();
@@ -65,7 +64,7 @@ public class CsvExtractor implements Extractor {
     private Map<String, Object> convertToMap(List<String> headers, List<String> items) {
         Map<String, Object> result = new HashMap<>();
         for (int i = 0; i < headers.size(); i++) {
-            result.put(headers.get(i), items.get(i));
+            result.put(headers.get(i), items.get(i).replaceAll("^\"|\"$", ""));
         }
         return result;
     }
