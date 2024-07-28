@@ -15,7 +15,7 @@ public class CsvExtractorTest {
     @Test
     void testExtract() {
 
-        String filename = "BoC-2023-12.csv";
+        String filename = "2023-07-boc.csv";
         String filePath = "sample/" + filename;
         var inputStream = CsvExtractorTest.class.getClassLoader().getResourceAsStream(filePath);
         Assertions.assertThat(inputStream).isNotNull();
@@ -25,59 +25,50 @@ public class CsvExtractorTest {
 
         var expected = new ArrayList<Map<String, Object>>();
 
+        Map<String, Object> line0 = new HashMap<>();
+        line0.put("Date", "2023/06/30");
+        line0.put("Transaction Details", "Balance Brought Forward");
+        line0.put("Deposit", "");
+        line0.put("Withdrawal", "");
+        line0.put("Balance in Original Currency", "4,000.00");
+        line0.put(TransactionMeta.IMPORT_LINE_NO, 0);
+        expected.add(line0);
+
         Map<String, Object> line1 = new HashMap<>();
-        line1.put("Date", "2023/11/30");
-        line1.put("Transaction Details", "Balance Brought Forward");
+        line1.put("Date", "2023/07/25");
+        line1.put("Transaction Details", "Transfer FPS/PO LEUNG KUK/12230725F280350081");
         line1.put("Deposit", "");
-        line1.put("Withdrawal", "");
-        line1.put("Balance in Original Currency", "184.00");
-        line1.put(TransactionMeta.IMPORT_LINE_NO, 0);
+        line1.put("Withdrawal", "3,000.00");
+        line1.put("Balance in Original Currency", "1,000.00");
+        line1.put(TransactionMeta.IMPORT_LINE_NO, 1);
         expected.add(line1);
 
         Map<String, Object> line2 = new HashMap<>();
-        line2.put("Date", "2023/12/25");
-        line2.put("Transaction Details", "Transfer FPS/MR CHU CHI HANG/FRN20231225PAYC0101405310021");
-        line2.put("Deposit", "3,575.34");
-        line2.put("Withdrawal", "");
-        line2.put("Balance in Original Currency", "3,759.34");
-        line2.put(TransactionMeta.IMPORT_LINE_NO, 1);
+        line2.put("Date", "2023/07/25");
+        line2.put("Transaction Details", "Transfer FPS/HONG KONG & CHINA GAS LTD/12230725F348072456");
+        line2.put("Deposit", "");
+        line2.put("Withdrawal", "500.00");
+        line2.put("Balance in Original Currency", "500.00");
+        line2.put(TransactionMeta.IMPORT_LINE_NO, 2);
         expected.add(line2);
 
         Map<String, Object> line3 = new HashMap<>();
-        line3.put("Date", "2023/12/25");
-        line3.put("Transaction Details", "Transfer FPS/THE HONGKONG ELECTRIC CO LTD/12231225F386428088");
-        line3.put("Deposit", "");
-        line3.put("Withdrawal", "279.00");
-        line3.put("Balance in Original Currency", "3,480.34");
-        line3.put(TransactionMeta.IMPORT_LINE_NO, 2);
+        line3.put("Date", "2023/07/25");
+        line3.put("Transaction Details", "Transfer FPS/MR CHAN TAI MAN/FRN20230725PAYC0101333496718");
+        line3.put("Deposit", "3,500.00");
+        line3.put("Withdrawal", "");
+        line3.put("Balance in Original Currency", "4,000.00");
+        line3.put(TransactionMeta.IMPORT_LINE_NO, 3);
         expected.add(line3);
 
         Map<String, Object> line4 = new HashMap<>();
-        line4.put("Date", "2023/12/25");
-        line4.put("Transaction Details", "Transfer FPS/CHINA MOBILE HONG KONG COMPANY LIMITED/12231225F386432112");
+        line4.put("Date", "2023/07/31");
+        line4.put("Transaction Details", "Balance Carried Forward");
         line4.put("Deposit", "");
-        line4.put("Withdrawal", "88.00");
-        line4.put("Balance in Original Currency", "3,392.34");
-        line4.put(TransactionMeta.IMPORT_LINE_NO, 3);
+        line4.put("Withdrawal", "");
+        line4.put("Balance in Original Currency", "4,000.00");
+        line4.put(TransactionMeta.IMPORT_LINE_NO, 4);
         expected.add(line4);
-
-        Map<String, Object> line5 = new HashMap<>();
-        line5.put("Date", "2023/12/25");
-        line5.put("Transaction Details", "Transfer FPS/CUMBERLAND PRESBYTERIAN CHURCH H K P/12231225F386428315");
-        line5.put("Deposit", "");
-        line5.put("Withdrawal", "3,000.00");
-        line5.put("Balance in Original Currency", "392.34");
-        line5.put(TransactionMeta.IMPORT_LINE_NO, 4);
-        expected.add(line5);
-
-        Map<String, Object> line6 = new HashMap<>();
-        line6.put("Date", "2023/12/30");
-        line6.put("Transaction Details", "Balance Carried Forward");
-        line6.put("Deposit", "");
-        line6.put("Withdrawal", "");
-        line6.put("Balance in Original Currency", "392.34");
-        line6.put(TransactionMeta.IMPORT_LINE_NO, 5);
-        expected.add(line6);
 
         ExtractorTestUtil.assertTableContent(expected, actual);
 
