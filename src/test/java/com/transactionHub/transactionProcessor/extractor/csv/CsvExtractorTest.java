@@ -20,7 +20,7 @@ public class CsvExtractorTest {
         var inputStream = CsvExtractorTest.class.getClassLoader().getResourceAsStream(filePath);
         Assertions.assertThat(inputStream).isNotNull();
 
-        var extractor = new CsvExtractor();
+        var extractor = new CsvExtractor('|');
         var actual = extractor.extract(inputStream);
 
         var expected = new ArrayList<Map<String, Object>>();

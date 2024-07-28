@@ -31,7 +31,7 @@ class ImportPipelineTest {
     void testImportCsv_BOC() {
 
         String filename = "2023-07-boc.csv";
-        var extractor = new CsvExtractor();
+        var extractor = new CsvExtractor('|');
 
         assertBocImport(filename, extractor);
     }

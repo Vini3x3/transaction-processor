@@ -1,5 +1,6 @@
 package com.transactionHub.transactionProcessor.extractor.csv;
 
+import com.opencsv.CSVParser;
 import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
@@ -15,23 +16,24 @@ import java.util.*;
 
 public class CsvExtractor implements Extractor {
 
-    private final char separator;
+    private final CSVParser csvParser;
 
     public CsvExtractor() {
-        this('|');
+        this(null);
     }
 
-    public CsvExtractor(char separator) {
-        this.separator = separator;
+    public CsvExtractor(Character separator) {
+        var builder = new CSVParserBuilder();
+        if (separator != null) {
+            builder.withSeparator(separator);
+        }
+        csvParser = builder.build();
     }
 
     @Override
     public List<Map<String, Object>> extract(InputStream inputStream) {
-
         CSVReader reader = new CSVReaderBuilder(new InputStreamReader(inputStream))
-                .withCSVParser(new CSVParserBuilder()
-                        .withSeparator(separator)
-                        .build())
+                .withCSVParser(this.csvParser)
                 .build();
 
         List<String> headers = new ArrayList<>();
