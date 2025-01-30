@@ -26,49 +26,31 @@ class ExcelExtractorTest {
         var expected = new ArrayList<Map<String, Object>>();
 
         Map<String, Object> line0 = new HashMap<>();
-        line0.put("Date", DateTime.parse("2023-06-30").toDate());
-        line0.put("Transaction Details", "Balance Brought Forward");
-        line0.put("Deposit", null);
-        line0.put("Withdrawal", null);
-        line0.put("Balance in Original Currency", BigDecimal.valueOf(4000.00));
+        line0.put("Transaction Date", DateTime.parse("2023-07-25").toDate());
+        line0.put("Particulars", "Transfer FPS/PO LEUNG KUK/12230725F280350081");
+        line0.put("Deposits", null);
+        line0.put("Withdrawals", BigDecimal.valueOf(3000.00));
+        line0.put("Balance/Debit(DR)", BigDecimal.valueOf(1000.00));
         line0.put(TransactionMeta.IMPORT_LINE_NO, 0);
         expected.add(line0);
 
         Map<String, Object> line1 = new HashMap<>();
-        line1.put("Date", DateTime.parse("2023-07-25").toDate());
-        line1.put("Transaction Details", "Transfer FPS/PO LEUNG KUK/12230725F280350081");
-        line1.put("Deposit", null);
-        line1.put("Withdrawal", BigDecimal.valueOf(3000.00));
-        line1.put("Balance in Original Currency", BigDecimal.valueOf(1000.00));
+        line1.put("Transaction Date", DateTime.parse("2023-07-25").toDate());
+        line1.put("Particulars", "Transfer FPS/HONG KONG & CHINA GAS LTD/12230725F348072456");
+        line1.put("Deposits", null);
+        line1.put("Withdrawals", BigDecimal.valueOf(500.00));
+        line1.put("Balance/Debit(DR)", BigDecimal.valueOf(500.00));
         line1.put(TransactionMeta.IMPORT_LINE_NO, 1);
         expected.add(line1);
 
         Map<String, Object> line2 = new HashMap<>();
-        line2.put("Date", DateTime.parse("2023-07-25").toDate());
-        line2.put("Transaction Details", "Transfer FPS/HONG KONG & CHINA GAS LTD/12230725F348072456");
-        line2.put("Deposit", null);
-        line2.put("Withdrawal", BigDecimal.valueOf(500.00));
-        line2.put("Balance in Original Currency", BigDecimal.valueOf(500.00));
+        line2.put("Transaction Date", DateTime.parse("2023-07-25").toDate());
+        line2.put("Particulars", "Transfer FPS/MR CHAN TAI MAN/FRN20230725PAYC0101333496718");
+        line2.put("Deposits", BigDecimal.valueOf(3500.00));
+        line2.put("Withdrawals", null);
+        line2.put("Balance/Debit(DR)", BigDecimal.valueOf(4000.00));
         line2.put(TransactionMeta.IMPORT_LINE_NO, 2);
         expected.add(line2);
-
-        Map<String, Object> line3 = new HashMap<>();
-        line3.put("Date", DateTime.parse("2023-07-25").toDate());
-        line3.put("Transaction Details", "Transfer FPS/MR CHAN TAI MAN/FRN20230725PAYC0101333496718");
-        line3.put("Deposit", BigDecimal.valueOf(3500.00));
-        line3.put("Withdrawal", null);
-        line3.put("Balance in Original Currency", BigDecimal.valueOf(4000.00));
-        line3.put(TransactionMeta.IMPORT_LINE_NO, 3);
-        expected.add(line3);
-
-        Map<String, Object> line4 = new HashMap<>();
-        line4.put("Date", DateTime.parse("2023-07-31").toDate());
-        line4.put("Transaction Details", "Balance Carried Forward");
-        line4.put("Deposit", null);
-        line4.put("Withdrawal", null);
-        line4.put("Balance in Original Currency", BigDecimal.valueOf(4000.00));
-        line4.put(TransactionMeta.IMPORT_LINE_NO, 4);
-        expected.add(line4);
 
         ExtractorTestUtil.assertTableContent(expected, actual);
     }
