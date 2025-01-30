@@ -1,6 +1,9 @@
 package com.transactionHub.transactionProcessor.extractor.csv;
 
-import com.opencsv.*;
+import com.opencsv.AbstractCSVParser;
+import com.opencsv.CSVParserBuilder;
+import com.opencsv.CSVReader;
+import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvValidationException;
 import com.transactionHub.transactionCoreLibrary.constant.TransactionMeta;
 import com.transactionHub.transactionProcessor.extractor.Extractor;
@@ -24,13 +27,13 @@ public class CsvExtractor implements Extractor {
         this(separator, 0);
     }
 
-    public CsvExtractor(Character separator, int skip) {
+    public CsvExtractor(Character separator, Integer skip) {
         var builder = new CSVParserBuilder();
         if (separator != null) {
             builder.withSeparator(separator);
         }
         this.csvParser = builder.build();
-        this.skip = skip;
+        this.skip = skip == null ? 0 : skip;
     }
 
     @Override
