@@ -9,20 +9,20 @@ class ExtractorFactoryTest {
 
     @Test
     void testCreate_CsvExtractor() {
-        var parser = ExtractorFactory.create("csv", '|');
+        var parser = ExtractorFactory.create().withType("csv").build();
         Assertions.assertThat(parser).isInstanceOf(CsvExtractor.class);
     }
 
     @Test
     void testCreate_ExcelExtractor() {
-        var parser = ExtractorFactory.create("excel");
+        var parser = ExtractorFactory.create().withType("excel").build();
         Assertions.assertThat(parser).isInstanceOf(ExcelExtractor.class);
     }
 
     @Test
     void testCreate_Unsupported() {
         Assertions.assertThatExceptionOfType(ExtractorException.class)
-                .isThrownBy(() -> ExtractorFactory.create("json"))
+                .isThrownBy(() -> ExtractorFactory.create().withType("json").build())
                 .withMessageContaining("unsupported extractor format: json");
     }
 
