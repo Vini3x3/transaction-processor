@@ -19,6 +19,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -31,7 +32,7 @@ class ImportPipelineTest {
     void testImportCsv_BOC() {
 
         String filename = "2023-07-boc.csv";
-        var extractor = new CsvExtractor('|');
+        var extractor = new CsvExtractor(',', 3);
 
         assertBocImport(filename, extractor);
     }
@@ -51,12 +52,12 @@ class ImportPipelineTest {
         var inputStream = ImportPipelineTest.class.getClassLoader().getResourceAsStream(excelPath);
 
         var mapper = new TransactionMapper(
-                "Date",
-                "Transaction Details",
-                "Withdrawal",
-                "Deposit",
+                "Transaction Date",
+                "Particulars",
+                "Withdrawals",
+                "Deposits",
                 "",
-                "Balance in Original Currency",
+                "Balance/Debit(DR)",
                 AccountEnum.BOC,
                 "yyyy/MM/dd");
 
@@ -79,28 +80,35 @@ class ImportPipelineTest {
 
         var transactions = importPipeline.importData(inputStream, filename);
 
+        assertBocContent(transactions, filename);
+
+    }
+
+    private void assertBocContent(List<Transaction> transactions, String filename) {
+
         DateTimeFormatter fmt = ISODateTimeFormat.date();
         String importDateString = fmt.print(DateTime.now(DateTimeZone.UTC));
 
-        Assertions.assertThat(transactions).hasSize(5);
+        Assertions.assertThat(transactions).hasSize(3);
 
         Transaction transaction0 = transactions.get(0);
-        Assertions.assertThat(transaction0.getDate()).isEqualTo(convertToInstant(new DateTime(2023, 6, 30, 0, 0, 0, DateTimeZone.UTC)));
+        Assertions.assertThat(transaction0.getDate()).isEqualTo(convertToInstant(new DateTime(2023, 7, 25, 0, 0, 0, DateTimeZone.UTC)));
         Assertions.assertThat(transaction0.getOffset()).isEqualTo(0);
-        Assertions.assertThat(transaction0.getDescription()).isEqualTo("Balance Brought Forward");
+        Assertions.assertThat(transaction0.getDescription()).isEqualTo("Transfer FPS/PO LEUNG KUK/12230725F280350081");
         Assertions.assertThat(transaction0.getDeposit()).isEqualTo(new BigDecimal("0.00"));
-        Assertions.assertThat(transaction0.getWithdrawal()).isEqualTo(new BigDecimal("0.00"));
-        Assertions.assertThat(transaction0.getTags()).isEmpty();
+        Assertions.assertThat(transaction0.getWithdrawal()).isEqualTo(new BigDecimal("3000.00"));
+        Assertions.assertThat(transaction0.getTags()).containsExactly("SYS:SCHEDULE:BILL");
         Assertions.assertThat(transaction0.getMeta()).containsEntry(TransactionMeta.IMPORT_FILENAME, filename);
         Assertions.assertThat(transaction0.getMeta()).containsKey(TransactionMeta.IMPORT_TIMESTAMP);
         Assertions.assertThat(transaction0.getMeta().get(TransactionMeta.IMPORT_TIMESTAMP)).contains(importDateString);
 
         Transaction transaction1 = transactions.get(1);
         Assertions.assertThat(transaction1.getDate()).isEqualTo(convertToInstant(new DateTime(2023, 7, 25, 0, 0, 0, DateTimeZone.UTC)));
-        Assertions.assertThat(transaction1.getOffset()).isEqualTo(0);
-        Assertions.assertThat(transaction1.getDescription()).isEqualTo("Transfer FPS/PO LEUNG KUK/12230725F280350081");
+        Assertions.assertThat(transaction1.getOffset()).isEqualTo(1);
+        Assertions.assertThat(transaction1.getDescription()).isEqualTo("Transfer FPS/HONG KONG & CHINA GAS LTD/12230725F348072456");
         Assertions.assertThat(transaction1.getDeposit()).isEqualTo(new BigDecimal("0.00"));
-        Assertions.assertThat(transaction1.getWithdrawal()).isEqualTo(new BigDecimal("3000.00"));
+        Assertions.assertThat(transaction1.getWithdrawal()).isEqualTo(new BigDecimal("500.00"));
+        Assertions.assertThat(transaction1.getBalance()).isEqualTo(new BigDecimal("500.00"));
         Assertions.assertThat(transaction1.getTags()).containsExactly("SYS:SCHEDULE:BILL");
         Assertions.assertThat(transaction1.getMeta()).containsEntry(TransactionMeta.IMPORT_FILENAME, filename);
         Assertions.assertThat(transaction1.getMeta()).containsKey(TransactionMeta.IMPORT_TIMESTAMP);
@@ -108,27 +116,15 @@ class ImportPipelineTest {
 
         Transaction transaction2 = transactions.get(2);
         Assertions.assertThat(transaction2.getDate()).isEqualTo(convertToInstant(new DateTime(2023, 7, 25, 0, 0, 0, DateTimeZone.UTC)));
-        Assertions.assertThat(transaction2.getOffset()).isEqualTo(1);
-        Assertions.assertThat(transaction2.getDescription()).isEqualTo("Transfer FPS/HONG KONG & CHINA GAS LTD/12230725F348072456");
-        Assertions.assertThat(transaction2.getDeposit()).isEqualTo(new BigDecimal("0.00"));
-        Assertions.assertThat(transaction2.getWithdrawal()).isEqualTo(new BigDecimal("500.00"));
-        Assertions.assertThat(transaction2.getBalance()).isEqualTo(new BigDecimal("500.00"));
-        Assertions.assertThat(transaction2.getTags()).containsExactly("SYS:SCHEDULE:BILL");
+        Assertions.assertThat(transaction2.getOffset()).isEqualTo(2);
+        Assertions.assertThat(transaction2.getDescription()).isEqualTo("Transfer FPS/MR CHAN TAI MAN/FRN20230725PAYC0101333496718");
+        Assertions.assertThat(transaction2.getDeposit()).isEqualTo(new BigDecimal("3500.00"));
+        Assertions.assertThat(transaction2.getWithdrawal()).isEqualTo(new BigDecimal("000.00"));
+        Assertions.assertThat(transaction2.getBalance()).isEqualTo(new BigDecimal("4000.00"));
+        Assertions.assertThat(transaction2.getTags()).containsExactly("FROM-HSBC");
         Assertions.assertThat(transaction2.getMeta()).containsEntry(TransactionMeta.IMPORT_FILENAME, filename);
         Assertions.assertThat(transaction2.getMeta()).containsKey(TransactionMeta.IMPORT_TIMESTAMP);
         Assertions.assertThat(transaction2.getMeta().get(TransactionMeta.IMPORT_TIMESTAMP)).contains(importDateString);
-
-        Transaction transaction3 = transactions.get(3);
-        Assertions.assertThat(transaction3.getDate()).isEqualTo(convertToInstant(new DateTime(2023, 7, 25, 0, 0, 0, DateTimeZone.UTC)));
-        Assertions.assertThat(transaction3.getOffset()).isEqualTo(2);
-        Assertions.assertThat(transaction3.getDescription()).isEqualTo("Transfer FPS/MR CHAN TAI MAN/FRN20230725PAYC0101333496718");
-        Assertions.assertThat(transaction3.getDeposit()).isEqualTo(new BigDecimal("3500.00"));
-        Assertions.assertThat(transaction3.getWithdrawal()).isEqualTo(new BigDecimal("000.00"));
-        Assertions.assertThat(transaction3.getBalance()).isEqualTo(new BigDecimal("4000.00"));
-        Assertions.assertThat(transaction3.getTags()).containsExactly("FROM-HSBC");
-        Assertions.assertThat(transaction3.getMeta()).containsEntry(TransactionMeta.IMPORT_FILENAME, filename);
-        Assertions.assertThat(transaction3.getMeta()).containsKey(TransactionMeta.IMPORT_TIMESTAMP);
-        Assertions.assertThat(transaction3.getMeta().get(TransactionMeta.IMPORT_TIMESTAMP)).contains(importDateString);
     }
 
 

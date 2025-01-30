@@ -14,23 +14,30 @@ import java.util.*;
 public class CsvExtractor implements Extractor {
 
     private final AbstractCSVParser csvParser;
+    private final int skip;
 
     public CsvExtractor() {
         this(null);
     }
 
     public CsvExtractor(Character separator) {
+        this(separator, 0);
+    }
+
+    public CsvExtractor(Character separator, int skip) {
         var builder = new CSVParserBuilder();
         if (separator != null) {
             builder.withSeparator(separator);
         }
-        csvParser = builder.build();
+        this.csvParser = builder.build();
+        this.skip = skip;
     }
 
     @Override
     public List<Map<String, Object>> extract(InputStream inputStream) {
         CSVReader reader = new CSVReaderBuilder(new InputStreamReader(inputStream))
                 .withCSVParser(this.csvParser)
+                .withSkipLines(this.skip)
                 .build();
 
         List<String> headers = new ArrayList<>();
